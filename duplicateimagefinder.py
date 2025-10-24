@@ -1,6 +1,7 @@
 import sys
 import os
 import csv
+import shutil
 from PIL import Image
 import pillow_heif
 pillow_heif.register_heif_opener()
@@ -140,6 +141,28 @@ def process_groups(groups, folder, hashes):
             best = max(scores, key=scores.get)
             print(f"  ✅ Suggested to keep: {best} (Highest score in group)")
 
+def move_duplicates(groups, folder, hashes):
+    dup_dir = os.path.join(folder, "duplicates")
+    os.makedirs(dup_dir, exist_ok=True)
+
+    for group in groups:
+        scores = {}
+        for img in group:
+            q = analyze_quality(os.path.join(folder, img))
+            if q:
+                scores[img] = score_quality(q)
+        if scores:
+            best = max(scores, key=scores.get)
+            for img in group:
+                if img != best:
+                    src = os.path.join(folder, img)
+                    dst = os.path.join(dup_dir, img)
+                    try:
+                        shutil.move(src, dst)
+                        print(f"📦 Moved duplicate: {img} → duplicates/")
+                    except Exception as e:
+                        print(f"⚠️ Could not move {img}: {e}")
+
 def main():
     args = parse_args()
     if not os.path.isdir(args.folder):
@@ -158,6 +181,8 @@ def main():
     print("  🔹 Texture Detail: Edge pixel density (0–100%)")
     print("     → Higher is better. Reflects fine surface detail and structure.")
     print("  ✅ Suggested image is based on: sharpness - noise + texture")
+
+    move_duplicates(groups, args.folder, hashes)
 
 if __name__ == "__main__":
     main()
