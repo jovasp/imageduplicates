@@ -31,7 +31,7 @@ pip install pillow pillow-heif imagehash opencv-python tqdm numpy
 ### 📁 Usage
 
 ```bash
-python group_images_by_similarity.py /path/to/images --threshold 85
+python duplicateimagefinder.py /path/to/images --threshold 85
 ```
 
 - `--threshold`: Minimum similarity percentage to group images (default: 70)
