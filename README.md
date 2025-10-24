@@ -72,5 +72,3 @@ Score formula: `sharpness - noise + texture`
 MIT License. See `LICENSE` file for details.
 
 ---
-
-Would you like a logo, badges, or GitHub Actions integration for auto-validation? I can help you polish the repo even further.
